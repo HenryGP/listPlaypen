@@ -36,11 +36,13 @@ class App extends Component {
             <Grid container spacing={24} direction="column" >
               
               <Grid item sm={8}>
-                <SimpleCard selection={["APAC"]} groups={{"APAC":["Sydney"],"EMEA":["Dublin"],"NA":["New York"]}}/>
+                <SimpleCard title="Teams" selection={["APAC"]} groups={{"APAC":["Sydney", "Delhi"],"EMEA":["Dublin", "Tel Aviv"],"NA":["New York", "Austin", "Palo Alto"]}}/>
               </Grid>
 
               <Grid item sm={8}>
-                <SimpleCard />
+               <Grid item sm={8}>
+                 <SimpleCard title="Skills" selection={["Core", "A&I", "Atlas"]} groups={{"Core":[],"A&I":[],"Atlas":[]}}/>
+               </Grid>
               </Grid>
             
             </Grid>
