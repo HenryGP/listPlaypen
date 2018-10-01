@@ -2,12 +2,9 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { Paper } from '@material-ui/core';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -33,7 +30,7 @@ const styles = {
 class SimpleCard extends Component {
   constructor(props){
     super(props);
-    const { groups, selection } = props;
+    var { groups, selection } = props;
     
     var groupA = [];
     for (var element in groups){
@@ -138,6 +135,7 @@ class SimpleCard extends Component {
     return (
         <Card className={classes.card}>
           <CardContent>
+              
             <Typography className={classes.title} color="textPrimary">
               {this.props.title}
             </Typography>
