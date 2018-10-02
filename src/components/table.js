@@ -199,12 +199,18 @@ class EnhancedTable extends React.Component {
   
   constructor(props){
     super(props);
-    var {data} = props;
+    var {data, filters} = props;
+    
+    var filteredData = data.map((element)=>{
+      element.visible = filters.indexOf(element.location)>=0 ? true : false;
+      return element;
+    });
+
     this.state = {
       order: 'asc',
       orderBy: 'loadScore',
       selected: [],
-      data: data,
+      data: filteredData
     };
   };
   
@@ -270,31 +276,33 @@ class EnhancedTable extends React.Component {
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
                 .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
-                        {n.name}
-                      </TableCell>
-                      <TableCell numeric>{n.loadScore}</TableCell>
-                      <TableCell numeric>{n.ticketCount}</TableCell>
-                      <TableCell >{n.location}</TableCell>
-                      <TableCell >{n.type}</TableCell>
-                      <TableCell numeric>{n.fts}</TableCell>
-                      <TableCell numeric>{n.ooo}</TableCell>
-                    </TableRow>
-                  );
+                  if(n.visible){
+                    const isSelected = this.isSelected(n.id);
+                    return (
+                      <TableRow
+                        hover
+                        onClick={event => this.handleClick(event, n.id)}
+                        role="checkbox"
+                        aria-checked={isSelected}
+                        tabIndex={-1}
+                        key={n.id}
+                        selected={isSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox checked={isSelected} />
+                        </TableCell>
+                        <TableCell component="th" scope="row" padding="none">
+                          {n.name}
+                        </TableCell>
+                        <TableCell numeric>{n.loadScore}</TableCell>
+                        <TableCell numeric>{n.ticketCount}</TableCell>
+                        <TableCell >{n.location}</TableCell>
+                        <TableCell >{n.type}</TableCell>
+                        <TableCell numeric>{n.fts}</TableCell>
+                        <TableCell numeric>{n.ooo}</TableCell>
+                      </TableRow>
+                    );
+                  }
                 })}
             </TableBody>
           </Table>

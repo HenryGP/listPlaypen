@@ -30,23 +30,8 @@ const styles = {
 class SimpleCard extends Component {
   constructor(props){
     super(props);
-    var { groups, selection } = props;
-    
-    var groupA = [];
-    for (var element in groups){
-        groupA.push(element);
-    };
-
-    var groupB = [];
-    selection.map((parent) =>{
-        groups[parent].map((child) => {
-            groupB.push(child);
-        });
-    });
-    
-    this.state = {groups: groups, groupA: groupA, groupB: groupB, selection: selection};
-
-    //console.log(this.state);
+    const {groupA, groupB, selection} = props;
+    this.state = {groupA: groupA, groupB: groupB, selection: selection}
   }
 
   createGroupA(){
@@ -54,44 +39,13 @@ class SimpleCard extends Component {
     return selection1;
   }
 
-  checkedBox= name => event => {
-    var tempSelection = this.state.selection;
-    var tempGroupB = this.state.groupB;
-    if(event.target.checked && !this.isInArray(name.element, this.state.selection)){
-        tempSelection.push(name.element);
-        if(this.isInArray(name.element, this.state.groupA)){
-            this.state.groups[name.element].map((element)=>{
-                if(!this.isInArray(element, tempGroupB)){
-                    tempGroupB.push(element);
-                }
-            });
-        }
-    } 
-    else if (!event.target.checked && this.isInArray(name.element, this.state.groupB)){
-        this.removeElement(name.element, tempSelection);
-    }
-    else if (!event.target.checked && this.isInArray(name.element, this.state.selection)){
-        this.removeElement(name.element, tempSelection);
-        if(this.isInArray(name.element, this.state.groupA)){
-            this.state.groups[name.element].map((element)=>{
-                this.removeElement(element, tempSelection);
-                this.removeElement(element, tempGroupB);
-            });
-        }
-    }
-    this.setState({selection: tempSelection, groupB: tempGroupB});    
-  };
-
-  removeElement(value, array){
-    var index = array.indexOf(value);
-    if (index > -1) {
-        array.splice(index, 1);
-    }
-  };
-
   isInArray(value, array) {
     return array.indexOf(value) > -1;
   };
+
+  checkedBox= name => event => {
+    this.props.onBoxCheck(name, event, this.state.groupA);
+    }
 
   render(){
     const { classes } = this.props;
