@@ -22,6 +22,10 @@ function createData(name, loadScore, ticketCount, location, type, fts, ooo, visi
   return { id: counter, name, loadScore, ticketCount, location, type, fts, ooo, visible };
 };
 
+const filterSkills = {"Core":["Queries"],"A&I":["OM"],"Atlas":["Billing"]};
+
+const filterSkillSelection = ["Core", "A&I", "Atlas"];
+
 const filterTeamSelection = [
   "APAC"
 ];
@@ -70,12 +74,26 @@ class App extends Component {
         });
     });
 
+    var skills = [];
+    for (var element in filterSkills){
+      skills.push(element);
+    };
+
+    var tags = [];
+    filterSkillSelection.map((parent) =>{
+      filterSkills[parent].map((child) => {
+            tags.push(child);
+        });
+    });
+    
     this.state = {
       filterTeamGroups: filterTeamGroups, geoRegions: geoRegions, 
       offices: offices, filterTeamSelection: filterTeamSelection,
-      tableData: tableData
+      tableData: tableData, skills: skills, tags: tags,
+      filterSkillSelection: filterSkillSelection, filterSkills: filterSkills
     };
     this.checkedBox=this.checkedBox.bind(this);
+    this.checkedBoxSkills=this.checkedBoxSkills.bind(this);
   }
 
   checkedBox(name, event, groupA){
@@ -106,9 +124,39 @@ class App extends Component {
     this.setState({filterTeamSelection: tempFilterTeamSelection, offices: tempOffices});
   };
 
+  checkedBoxSkills(name, event, groupA){
+    var tempFilterSkillSelection = this.state.filterSkillSelection;
+    var tempTags = this.state.tags;
+    if(event.target.checked && !isInArray(name.element, tempFilterSkillSelection)){
+      tempFilterSkillSelection.push(name.element);
+        if(isInArray(name.element, groupA)){
+            this.state.filterSkills[name.element].map((element)=>{
+                if(!isInArray(element, tempTags)){
+                  tempTags.push(element);
+                }
+            });
+        }
+    } 
+    else if (!event.target.checked && isInArray(name.element, tempTags)){
+        removeElement(name.element, tempFilterSkillSelection);
+    }
+    else if (!event.target.checked && isInArray(name.element, tempFilterSkillSelection)){
+        removeElement(name.element, tempFilterSkillSelection);
+        if(isInArray(name.element, groupA)){
+            this.state.filterSkills[name.element].map((element)=>{
+                removeElement(element, tempFilterSkillSelection);
+                removeElement(element, tempTags);
+            });
+        }
+    }
+    this.setState({filterSkillSelection: tempFilterSkillSelection, tags: tempTags});
+  }
+
   render() {
     var filteredData = this.state.tableData.map((element)=>{
-      element.visible = this.state.filterTeamSelection.indexOf(element.location)>=0 ? true : false;
+      var visibleTeam = this.state.filterTeamSelection.indexOf(element.location)>=0 ? true : false;
+      var visibleSkill = this.state.filterSkillSelection.indexOf(element.type)>=0 ? true : false;
+      element.visible = visibleTeam && visibleSkill;
       return element;
     });
 
@@ -133,11 +181,14 @@ class App extends Component {
               </Grid>
 
               <Grid item sm={8}>
-               { /*
+               {
                <Grid item sm={8}>
-                 <SimpleCard title="Skills" selection={["Core", "A&I", "Atlas"]} groups={{"Core":[],"A&I":[],"Atlas":[]}}/>
+                 <SimpleCard title="Skills" 
+                  groupA={this.state.skills} groupB={this.state.tags} groups={this.state.filterSkills}
+                  selection={this.state.filterSkillSelection} onBoxCheck={this.checkedBoxSkills}
+                 />
                </Grid>
-               */}
+               }
               </Grid>
             
             </Grid>
