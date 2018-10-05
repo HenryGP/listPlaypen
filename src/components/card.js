@@ -34,11 +34,6 @@ class SimpleCard extends Component {
     this.state = {groupA: groupA, groupB: groupB, selection: selection}
   }
 
-  createGroupA(){
-    var selection1=[];
-    return selection1;
-  }
-
   checkedBox= name => event => {
     this.props.onBoxCheck(name, event, this.state.groupA);
     }

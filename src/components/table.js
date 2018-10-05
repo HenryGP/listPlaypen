@@ -320,7 +320,6 @@ class EnhancedTable extends React.Component {
     );
   }
 }
-//name, loadScore, ticketCount, location, type, fts, ooo
 
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
