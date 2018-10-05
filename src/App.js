@@ -92,64 +92,49 @@ class App extends Component {
       tableData: tableData, skills: skills, tags: tags,
       filterSkillSelection: filterSkillSelection, filterSkills: filterSkills
     };
-    this.checkedBox=this.checkedBox.bind(this);
-    this.checkedBoxSkills=this.checkedBoxSkills.bind(this);
+    
+    this.checkedBoxV2=this.checkedBoxV2.bind(this);
   }
 
-  checkedBox(name, event, groupA){
-    var tempFilterTeamSelection = this.state.filterTeamSelection;
-    var tempOffices = this.state.offices;
-    if(event.target.checked && !isInArray(name.element, tempFilterTeamSelection)){
-        tempFilterTeamSelection.push(name.element);
-        if(isInArray(name.element, groupA)){
-            this.state.filterTeamGroups[name.element].map((element)=>{
-                if(!isInArray(element, tempOffices)){
-                  tempOffices.push(element);
-                }
-            });
-        }
-    } 
-    else if (!event.target.checked && isInArray(name.element, tempOffices)){
-        removeElement(name.element, tempFilterTeamSelection);
+  checkedBoxV2(name, event, groupA){
+    var filterSelector1 = false;
+    if(this.state.filterTeamGroups[groupA[0]]){
+      filterSelector1 = true;
+      var filter = this.state.filterTeamGroups;
+      var selectionA = this.state.filterTeamSelection;
+      var selectionB = this.state.offices;
+    } else {
+      var filter = this.state.filterSkills;
+      var selectionA = this.state.filterSkillSelection;
+      var selectionB = this.state.tags;
     }
-    else if (!event.target.checked && isInArray(name.element, tempFilterTeamSelection)){
-        removeElement(name.element, tempFilterTeamSelection);
-        if(isInArray(name.element, groupA)){
-            this.state.filterTeamGroups[name.element].map((element)=>{
-                removeElement(element, tempFilterTeamSelection);
-                removeElement(element, tempOffices);
-            });
-        }
-    }
-    this.setState({filterTeamSelection: tempFilterTeamSelection, offices: tempOffices});
-  };
 
-  checkedBoxSkills(name, event, groupA){
-    var tempFilterSkillSelection = this.state.filterSkillSelection;
-    var tempTags = this.state.tags;
-    if(event.target.checked && !isInArray(name.element, tempFilterSkillSelection)){
-      tempFilterSkillSelection.push(name.element);
-        if(isInArray(name.element, groupA)){
-            this.state.filterSkills[name.element].map((element)=>{
-                if(!isInArray(element, tempTags)){
-                  tempTags.push(element);
-                }
-            });
-        }
-    } 
-    else if (!event.target.checked && isInArray(name.element, tempTags)){
-        removeElement(name.element, tempFilterSkillSelection);
+    if(event.target.checked && !isInArray(name.element, selectionA)){
+      selectionA.push(name.element);
+      if(isInArray(name.element, groupA)){
+        filter[name.element].map((element) => {
+          if(!isInArray(element, selectionB)){
+            selectionB.push(element);
+          }
+        })
+      }
+    } else if (!event.target.checked && isInArray(name.element, selectionB)){
+      removeElement(name.element, selectionA);
+    } else if (!event.target.checked && isInArray(name.element, selectionA)){
+      removeElement(name.element, selectionA);
+      if(isInArray(name.element, groupA)){
+        filter[name.element].map((element)=>{
+          removeElement(element, selectionA);
+          removeElement(element, selectionB);
+        })
+      }
     }
-    else if (!event.target.checked && isInArray(name.element, tempFilterSkillSelection)){
-        removeElement(name.element, tempFilterSkillSelection);
-        if(isInArray(name.element, groupA)){
-            this.state.filterSkills[name.element].map((element)=>{
-                removeElement(element, tempFilterSkillSelection);
-                removeElement(element, tempTags);
-            });
-        }
+
+    if(filterSelector1){
+      this.setState({filterTeamSelection: selectionA, offices: selectionB});
+    } else {
+      this.setState({filterSkillSelection: selectionA, tags: selectionB});
     }
-    this.setState({filterSkillSelection: tempFilterSkillSelection, tags: tempTags});
   }
 
   render() {
@@ -176,7 +161,7 @@ class App extends Component {
               <Grid item sm={8}>
                 <SimpleCard title="Teams" 
                 groupA={this.state.geoRegions} groupB={this.state.offices} groups={this.state.filterTeamGroups}
-                selection={this.state.filterTeamSelection} onBoxCheck={this.checkedBox}
+                selection={this.state.filterTeamSelection} onBoxCheck={this.checkedBoxV2}
                 />
               </Grid>
 
@@ -185,7 +170,7 @@ class App extends Component {
                <Grid item sm={8}>
                  <SimpleCard title="Skills" 
                   groupA={this.state.skills} groupB={this.state.tags} groups={this.state.filterSkills}
-                  selection={this.state.filterSkillSelection} onBoxCheck={this.checkedBoxSkills}
+                  selection={this.state.filterSkillSelection} onBoxCheck={this.checkedBoxV2}
                  />
                </Grid>
                }
