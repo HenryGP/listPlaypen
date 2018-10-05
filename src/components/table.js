@@ -228,12 +228,12 @@ class EnhancedTable extends React.Component {
   handleSelectAllClick = event => {
     if (event.target.checked) {
       var selected=[];
-      this.state.data.map(n => {
-        if(n.visible){selected.push(n.id);}
-      });
+      this.state.data
+      .filter(n => n.visible)
+      .map(n => selected.push(n.id));
       if(!selected == this.state.selected){
         this.setState({selected: selected});
-        return  
+        return
       }
     }
     this.setState({ selected: [] });
@@ -266,11 +266,9 @@ class EnhancedTable extends React.Component {
     const { classes } = this.props;
     const { data, order, orderBy, selected } = this.state;
 
-    data.map((element)=>{
-      if(!element.visible && this.isSelected(element.id)){
-        selected.splice(selected.indexOf(element.id), 1);
-      }
-    });
+    data
+    .filter( element => (!element.visible && this.isSelected(element.id)))
+    .map( element => selected.splice(selected.indexOf(element.id), 1));
 
     return (
       <Paper className={classes.root}>
@@ -287,8 +285,8 @@ class EnhancedTable extends React.Component {
             />
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
+                .filter(n => n.visible)
                 .map(n => {
-                  if(n.visible){
                     const isSelected = this.isSelected(n.id);
                     return (
                       <TableRow
@@ -314,7 +312,6 @@ class EnhancedTable extends React.Component {
                         <TableCell numeric>{n.ooo}</TableCell>
                       </TableRow>
                     );
-                  }
                 })}
             </TableBody>
           </Table>

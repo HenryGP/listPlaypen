@@ -4,17 +4,6 @@ import Table from './components/table'
 import SimpleCard from './components/card'
 import Grid from '@material-ui/core/Grid';
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-});
-
 let counter = 0;
 //name, loadScore, ticketCount, location, type, fts, ooo
 function createData(name, loadScore, ticketCount, location, type, fts, ooo, visible) {
@@ -46,10 +35,6 @@ const tableData = [
   createData('Guy7', 150, 5, "NA", "Atlas",1,1,true),
 ];
 
-function isInArray(value, array) {
-  return array.indexOf(value) > -1;
-};
-
 function removeElement(value, array){
   var index = array.indexOf(value);
   if (index > -1) {
@@ -68,20 +53,20 @@ class App extends Component {
     };
 
     var offices = [];
-    filterTeamSelection.map((parent) =>{
-      filterTeamGroups[parent].map((child) => {
+    filterTeamSelection.forEach((parent) =>{
+      filterTeamGroups[parent].forEach((child) => {
             offices.push(child);
         });
     });
 
     var skills = [];
-    for (var element in filterSkills){
+    for (element in filterSkills){
       skills.push(element);
     };
 
     var tags = [];
-    filterSkillSelection.map((parent) =>{
-      filterSkills[parent].map((child) => {
+    filterSkillSelection.forEach((parent) =>{
+      filterSkills[parent].forEach((child) => {
             tags.push(child);
         });
     });
@@ -92,38 +77,39 @@ class App extends Component {
       tableData: tableData, skills: skills, tags: tags,
       filterSkillSelection: filterSkillSelection, filterSkills: filterSkills
     };
-    
-    this.checkedBoxV2=this.checkedBoxV2.bind(this);
+
+    this.checkBox=this.checkBox.bind(this);
   }
 
-  checkedBoxV2(name, event, groupA){
+  checkBox(name, event, groupA){
     var filterSelector1 = false;
+    var selectionA, selectionB, filter;
     if(this.state.filterTeamGroups[groupA[0]]){
       filterSelector1 = true;
-      var filter = this.state.filterTeamGroups;
-      var selectionA = this.state.filterTeamSelection;
-      var selectionB = this.state.offices;
+      filter = this.state.filterTeamGroups;
+      selectionA = this.state.filterTeamSelection;
+      selectionB = this.state.offices;
     } else {
-      var filter = this.state.filterSkills;
-      var selectionA = this.state.filterSkillSelection;
-      var selectionB = this.state.tags;
+      filter = this.state.filterSkills;
+      selectionA = this.state.filterSkillSelection;
+      selectionB = this.state.tags;
     }
 
-    if(event.target.checked && !isInArray(name.element, selectionA)){
+    if(event.target.checked && !selectionA.includes(name.element)){
       selectionA.push(name.element);
-      if(isInArray(name.element, groupA)){
-        filter[name.element].map((element) => {
-          if(!isInArray(element, selectionB)){
+      if(groupA.includes(name.element)){
+        filter[name.element].forEach((element) => {
+          if(!selectionB.includes(element.name)){
             selectionB.push(element);
           }
         })
       }
-    } else if (!event.target.checked && isInArray(name.element, selectionB)){
+    } else if (!event.target.checked && selectionB.includes(name.element)){
       removeElement(name.element, selectionA);
-    } else if (!event.target.checked && isInArray(name.element, selectionA)){
+    } else if (!event.target.checked && selectionA.includes(name.element)){
       removeElement(name.element, selectionA);
-      if(isInArray(name.element, groupA)){
-        filter[name.element].map((element)=>{
+      if(groupA.includes(name.element)){
+        filter[name.element].forEach((element)=>{
           removeElement(element, selectionA);
           removeElement(element, selectionB);
         })
@@ -161,7 +147,7 @@ class App extends Component {
               <Grid item sm={8}>
                 <SimpleCard title="Teams" 
                 groupA={this.state.geoRegions} groupB={this.state.offices} groups={this.state.filterTeamGroups}
-                selection={this.state.filterTeamSelection} onBoxCheck={this.checkedBoxV2}
+                selection={this.state.filterTeamSelection} onBoxCheck={this.checkBox}
                 />
               </Grid>
 
@@ -170,7 +156,7 @@ class App extends Component {
                <Grid item sm={8}>
                  <SimpleCard title="Skills" 
                   groupA={this.state.skills} groupB={this.state.tags} groups={this.state.filterSkills}
-                  selection={this.state.filterSkillSelection} onBoxCheck={this.checkedBoxV2}
+                  selection={this.state.filterSkillSelection} onBoxCheck={this.checkBox}
                  />
                </Grid>
                }

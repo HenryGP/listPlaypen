@@ -39,10 +39,6 @@ class SimpleCard extends Component {
     return selection1;
   }
 
-  isInArray(value, array) {
-    return array.indexOf(value) > -1;
-  };
-
   checkedBox= name => event => {
     this.props.onBoxCheck(name, event, this.state.groupA);
     }
@@ -50,13 +46,12 @@ class SimpleCard extends Component {
   render(){
     const { classes } = this.props;
     
-    var listA =[];
-    this.state.groupA.map((element)=>{
-        listA.push(
+    var listA = this.state.groupA.map((element)=>{
+        return(
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={this.isInArray(element, this.state.selection)}
+                        checked={this.state.selection.includes(element)}
                         onChange={this.checkedBox({element})}
                         color="primary"
                         value={element}
@@ -68,13 +63,12 @@ class SimpleCard extends Component {
         )
     });
 
-    var listB = [];
-    this.state.groupB.map((element)=>{
-        listB.push(
+    var listB = this.state.groupB.map((element)=>{
+        return(
             <FormControlLabel
                   control={
                       <Checkbox
-                          checked={this.isInArray(element, this.state.selection)}
+                          checked={this.state.selection.includes(element)}
                           onChange={this.checkedBox({element})}
                           color="primary"
                           value={element}
