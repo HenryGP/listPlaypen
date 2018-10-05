@@ -227,8 +227,14 @@ class EnhancedTable extends React.Component {
 
   handleSelectAllClick = event => {
     if (event.target.checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
-      return;
+      var selected=[];
+      this.state.data.map(n => {
+        if(n.visible){selected.push(n.id);}
+      });
+      if(!selected == this.state.selected){
+        this.setState({selected: selected});
+        return  
+      }
     }
     this.setState({ selected: [] });
   };
@@ -259,6 +265,12 @@ class EnhancedTable extends React.Component {
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected } = this.state;
+
+    data.map((element)=>{
+      if(!element.visible && this.isSelected(element.id)){
+        selected.splice(selected.indexOf(element.id), 1);
+      }
+    });
 
     return (
       <Paper className={classes.root}>
