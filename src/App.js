@@ -9,6 +9,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
+import ConfirmationDialog from "./components/tzdialog";
 
 const styles = {
   root: {
@@ -127,11 +128,23 @@ class App extends Component {
       skills: skills,
       tags: tags,
       filterSkillSelection: filterSkillSelection,
-      filterSkills: filterSkills
+      filterSkills: filterSkills,
+      openTZDialog: false,
+      selectedTZ: "UTC",
     };
 
     this.checkBox = this.checkBox.bind(this);
+    this.handleTZDialogClose = this.handleTZDialogClose.bind(this);
+    this.handleTZButtonClick = this.handleTZButtonClick.bind(this);
   }
+
+  handleTZDialogClose(value){
+    this.setState({openTZDialog: false, selectedTZ: value});
+  }
+
+  handleTZButtonClick(){
+    this.setState({openTZDialog: true});
+  };
 
   checkBox(name, event, groupA) {
     var filterSelector1 = false;
@@ -193,6 +206,9 @@ class App extends Component {
 
     return (
       <div className={classes.root}>
+
+        <ConfirmationDialog handleClose={this.handleTZDialogClose} open={this.state.openTZDialog} value={"UTC"}/> 
+
         <AppBar position="static" color="default">
           <Toolbar>
             <Typography variant="title" color="inherit">
@@ -210,7 +226,7 @@ class App extends Component {
         >
           <Grid item xs={12}>
             <Card className={classes.paper}>
-              <SimpleSlider />
+              <SimpleSlider tz={this.state.selectedTZ} onTZButtonClick={this.handleTZButtonClick}/>
             </Card>
           </Grid>
 
