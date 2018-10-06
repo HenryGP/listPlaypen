@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Slider from "@material-ui/lab/Slider";
 import Button from "@material-ui/core/Button";
-import ConfirmationDialog from './tzdialog';
 
 const styles = theme => ({
   button: {
@@ -22,8 +21,8 @@ const styles = theme => ({
 class SimpleSlider extends Component {
   constructor(props) {
     super(props);
-    var {tz} = props;
-    this.state = { value: 12, tz: tz};
+    var {tz, value} = props;
+    this.state = { value: value, tz: tz};
   }
 
   handleChange = (event, value) => {
@@ -55,7 +54,7 @@ class SimpleSlider extends Component {
             height: "50%",
             width: "80%"
           }}
-          value={value}
+          value={this.props.value}
           min={0}
           max={24}
           step={0.5}
@@ -68,7 +67,7 @@ class SimpleSlider extends Component {
             color="primary"
             aria-label="Add"
           >
-            {this.stringify(value)}
+            {this.stringify(this.props.value)}
           </Button>
           <Button
             className={classes.button}
@@ -76,7 +75,7 @@ class SimpleSlider extends Component {
             color="inherit"
             aria-label="Add"
           >
-            {value < 12 || value === 24 ? "AM" : "PM"}
+            {this.props.value < 12 || this.props.value === 24 ? "AM" : "PM"}
           </Button>
           <Button
             className={classes.button}

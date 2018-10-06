@@ -10,6 +10,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import ConfirmationDialog from "./components/tzdialog";
+import moment from 'moment-timezone';
+
 
 const styles = {
   root: {
@@ -82,6 +84,18 @@ const tableData = [
   createData("Guy7", 150, 5, "NA", "Atlas", 1, 1, true)
 ];
 
+const tzSwitch = {
+  'Sydney': 'Australia/Sydney',
+  'Delhi': 'Asia/Kolkata',
+  'Tel Aviv': 'Asia/Jerusalem',
+  'Cont. Europe': 'Europe/Paris',
+  'Dublin': 'Europe/Dublin',
+  'New York': 'America/New_York',
+  'Austin': 'America/Chicago',
+  'Denver': 'America/Denver',
+  'Palo Alto': 'America/Los_Angeles',
+};
+
 function removeElement(value, array) {
   var index = array.indexOf(value);
   if (index > -1) {
@@ -118,6 +132,8 @@ class App extends Component {
       });
     });
 
+    const currentUTC = moment.utc().toISOString()
+
     this.state = {
       classes: classes,
       filterTeamGroups: filterTeamGroups,
@@ -130,7 +146,9 @@ class App extends Component {
       filterSkillSelection: filterSkillSelection,
       filterSkills: filterSkills,
       openTZDialog: false,
-      selectedTZ: "UTC",
+      selectedTZ: "Dublin",
+      currentUTC: currentUTC,
+      timelineValue: this.transformTZ(currentUTC,"Dublin"),
     };
 
     this.checkBox = this.checkBox.bind(this);
@@ -138,8 +156,15 @@ class App extends Component {
     this.handleTZButtonClick = this.handleTZButtonClick.bind(this);
   }
 
+  transformTZ(currentUTC, selectedTZ){
+    let transformedTZ = moment(currentUTC).tz(tzSwitch[selectedTZ]);
+    return transformedTZ.hour() + (transformedTZ.minute()>=30? .5 : 0);
+  }
+
   handleTZDialogClose(value){
-    this.setState({openTZDialog: false, selectedTZ: value});
+    var timeValue = this.transformTZ(this.state.currentUTC, value);
+    this.setState({openTZDialog: false, timelineValue: timeValue, selectedTZ: value});
+    console.log(this.state)
   }
 
   handleTZButtonClick(){
@@ -226,7 +251,7 @@ class App extends Component {
         >
           <Grid item xs={12}>
             <Card className={classes.paper}>
-              <SimpleSlider tz={this.state.selectedTZ} onTZButtonClick={this.handleTZButtonClick}/>
+              <SimpleSlider value={this.state.timelineValue} tz={this.state.selectedTZ} onTZButtonClick={this.handleTZButtonClick}/>
             </Card>
           </Grid>
 
