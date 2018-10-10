@@ -65,7 +65,7 @@ const filterSkills = { Core: ["Queries"], "A&I": ["OM"], Atlas: ["Billing"] };
 
 const filterSkillSelection = ["Core", "A&I", "Atlas"];
 
-const filterTeamSelection = ["APAC"];
+const filterTeamSelection = [];
 
 const filterTeamGroups = {
   APAC: ["Sydney", "Delhi"],

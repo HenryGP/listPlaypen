@@ -29,18 +29,6 @@ class SimpleSlider extends Component {
     this.setState({ value });
   };
 
-  stringify(value) {
-    var append;
-    if (value - Math.floor(value) === 0.5) {
-      append = ":30";
-    } else {
-      append = ":00";
-    }
-    var roundingValue = value === 12 ? value : Math.floor(value) % 12;
-    roundingValue = value === 12.5 ? 12 : roundingValue;
-    return roundingValue + append;
-  }
-
   render() {
     const { classes, onTZButtonClick } = this.props;
 
