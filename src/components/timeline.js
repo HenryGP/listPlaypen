@@ -21,8 +21,8 @@ const styles = theme => ({
 class SimpleSlider extends Component {
   constructor(props) {
     super(props);
-    var {tz, value} = props;
-    this.state = { value: value, tz: tz};
+    var { tz, value } = props;
+    this.state = { value: value, tz: tz };
   }
 
   handleChange = (event, value) => {
@@ -42,7 +42,6 @@ class SimpleSlider extends Component {
   }
 
   render() {
-    const { value, tz } = this.state;
     const { classes, onTZButtonClick } = this.props;
 
     return (
@@ -57,7 +56,7 @@ class SimpleSlider extends Component {
           value={this.props.value}
           min={0}
           max={24}
-          step={0.5}
+          step={0.1}
           onChange={this.handleChange}
         />
         <div style={{ float: "right", margin: 3 }}>
@@ -67,7 +66,7 @@ class SimpleSlider extends Component {
             color="primary"
             aria-label="Add"
           >
-            {this.stringify(this.props.value)}
+            {this.props.value.toString().replace(".", ":")}
           </Button>
           <Button
             className={classes.button}
@@ -86,7 +85,6 @@ class SimpleSlider extends Component {
           >
             {this.props.tz}
           </Button>
-
         </div>
       </center>
     );

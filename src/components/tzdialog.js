@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 /*'Sydney (UTC+10)',
   'Delhi (UTC+5:30)',
@@ -20,23 +20,24 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
   'MT (UTC-7)',
   'PT (UTC-8)', */
 const options = [
-  'Sydney',
-  'Delhi',
-  'Tel Aviv',
-  'Cont. Europe',
-  'Dublin',
-  'New York',
-  'Austin',
-  'Denver',
-  'Palo Alto',
+  "Sydney",
+  "Delhi",
+  "Tel Aviv",
+  "Cont. Europe",
+  "Dublin",
+  "New York",
+  "Austin",
+  "Denver",
+  "Palo Alto"
 ];
 
 class ConfirmationDialogRaw extends Component {
   constructor(props) {
     super(props);
-    var {value, open} = props;
+    var { value, open } = props;
     this.state = {
-      value: value, open: open,
+      value: value,
+      open: open
     };
   }
 
@@ -52,7 +53,7 @@ class ConfirmationDialogRaw extends Component {
   };
 
   handleCancel = () => {
-    this.props.onClose(this.props.value);
+    this.props.onClose(this.state.value);
   };
 
   handleOk = () => {
@@ -87,7 +88,12 @@ class ConfirmationDialogRaw extends Component {
             onChange={this.handleChange}
           >
             {options.map(option => (
-              <FormControlLabel value={option} key={option} control={<Radio />} label={option} />
+              <FormControlLabel
+                value={option}
+                key={option}
+                control={<Radio />}
+                label={option}
+              />
             ))}
           </RadioGroup>
         </DialogContent>
@@ -106,45 +112,46 @@ class ConfirmationDialogRaw extends Component {
 
 ConfirmationDialogRaw.propTypes = {
   onClose: PropTypes.func,
-  value: PropTypes.string,
+  value: PropTypes.string
 };
 
 const styles = theme => ({
   root: {
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   paper: {
-    width: '80%',
-    maxHeight: 435,
-  },
+    width: "80%",
+    maxHeight: 435
+  }
 });
 
 class ConfirmationDialog extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    var {open, value} = props;
-    this.state = {open: open, value: value};
+    var { open, value } = props;
+    console.log(value);
+    this.state = { open: open, value: value };
   }
 
   render() {
     const { classes, open, handleClose } = this.props;
     return (
-          <ConfirmationDialogRaw
-            classes={{
-              paper: classes.paper,
-            }}
-            open={open}
-            onClose={handleClose}
-            value={this.state.value}
-          />
+      <ConfirmationDialogRaw
+        classes={{
+          paper: classes.paper
+        }}
+        open={open}
+        onClose={handleClose}
+        value={this.state.value}
+      />
     );
   }
 }
 
 ConfirmationDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(ConfirmationDialog);

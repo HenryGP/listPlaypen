@@ -30,12 +30,10 @@ const styles = {
 class SimpleCard extends Component {
   constructor(props) {
     super(props);
-    const { groupA, groupB, selection } = props;
-    this.state = { groupA: groupA, groupB: groupB, selection: selection };
   }
 
   checkedBox = name => event => {
-    this.props.onBoxCheck(name, event, this.state.groupA);
+    this.props.onBoxCheck(name, event, this.props.groupA);
   };
 
   render() {
@@ -75,7 +73,6 @@ class SimpleCard extends Component {
       );
     });
 
-    
     return (
       <Card className={classes.card}>
         <CardContent>

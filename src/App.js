@@ -10,8 +10,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import ConfirmationDialog from "./components/tzdialog";
-import moment from 'moment-timezone';
-
+import moment from "moment-timezone";
 
 const styles = {
   root: {
@@ -75,15 +74,15 @@ const filterTeamGroups = {
 };
 
 const tzSwitch = {
-  'Sydney': 'Australia/Sydney', 
-  'Delhi': 'Asia/Kolkata',
-  'Tel Aviv': 'Asia/Jerusalem',
-  'Cont. Europe': 'Europe/Paris',
-  'Dublin': 'Europe/Dublin',
-  'New York': 'America/New_York',
-  'Austin': 'America/Chicago',
-  'Denver': 'America/Denver',
-  'Palo Alto': 'America/Los_Angeles',
+  Sydney: "Australia/Sydney",
+  Delhi: "Asia/Kolkata",
+  "Tel Aviv": "Asia/Jerusalem",
+  "Cont. Europe": "Europe/Paris",
+  Dublin: "Europe/Dublin",
+  "New York": "America/New_York",
+  Austin: "America/Chicago",
+  Denver: "America/Denver",
+  "Palo Alto": "America/Los_Angeles"
 };
 
 const tableData = [
@@ -149,7 +148,7 @@ class App extends Component {
       openTZDialog: false,
       selectedTZ: "Dublin",
       currentUTC: currentUTC,
-      timelineValue: this.transformTZ(currentUTC,"Dublin"),
+      timelineValue: this.transformTZ(currentUTC, "Dublin")
     };
 
     this.checkBox = this.checkBox.bind(this);
@@ -157,43 +156,62 @@ class App extends Component {
     this.handleTZButtonClick = this.handleTZButtonClick.bind(this);
   }
 
-  transformTZ(currentUTC, selectedTZ){
+  transformTZ(currentUTC, selectedTZ) {
     let transformedTZ = moment(currentUTC).tz(tzSwitch[selectedTZ]);
-    return transformedTZ.hour() + (transformedTZ.minute()>=30? .5 : 0);
+    return parseFloat(
+      (transformedTZ.hour() + transformedTZ.minute() / 100).toFixed(2)
+    );
   }
 
-  handleTZDialogClose(value){
+  handleTZDialogClose(value) {
     var timeValue = this.transformTZ(this.state.currentUTC, value);
-    this.setState({openTZDialog: false, timelineValue: timeValue, selectedTZ: value});
+    this.setState({
+      openTZDialog: false,
+      timelineValue: timeValue,
+      selectedTZ: value
+    });
     var filtering = this.adjustFilters();
-    this.setState({filterTeamSelection: filtering["filterTeamSelection"], offices: filtering["offices"]});
+    this.setState({
+      filterTeamSelection: filtering["filterTeamSelection"],
+      offices: filtering["offices"]
+    });
   }
 
-  adjustFilters(){
-    var location, currentLocationTime
-    var adjustedFilter=[], adjustedOffices=[];
+  adjustFilters() {
+    var location, currentLocationTime;
+    var adjustedFilter = [],
+      adjustedOffices = [];
     var currentUTC = moment.utc();
-    for(location in tzSwitch){
+    for (location in tzSwitch) {
       currentLocationTime = currentUTC.tz(tzSwitch[location]); //current time in location
-      if(currentLocationTime.hours()>=9 && currentLocationTime.hours() < 18){
+      if (
+        currentLocationTime.hours() >= 9 &&
+        currentLocationTime.hours() < 18
+      ) {
         var region;
-        for(region in filterTeamGroups){
-          if(filterTeamGroups[region].includes(location) && !adjustedFilter.includes(region)){
+        for (region in filterTeamGroups) {
+          if (
+            filterTeamGroups[region].includes(location) &&
+            !adjustedFilter.includes(region)
+          ) {
             adjustedFilter.push(region);
           }
         }
-        if(!adjustedOffices.includes(location)){
+        if (!adjustedOffices.includes(location)) {
           adjustedOffices.push(location);
         }
-       }
+      }
     }
-    return {"filterTeamSelection": adjustedFilter.concat(adjustedOffices), "offices": adjustedOffices};
+    return {
+      filterTeamSelection: adjustedFilter.concat(adjustedOffices),
+      offices: adjustedOffices
+    };
     //this.setState({filterTeamSelection: adjustedFilter.concat(adjustedOffices), offices: adjustedOffices});
-  };
+  }
 
-  handleTZButtonClick(){
-    this.setState({openTZDialog: true});
-  };
+  handleTZButtonClick() {
+    this.setState({ openTZDialog: true });
+  }
 
   checkBox(name, event, groupA) {
     var filterSelector1 = false;
@@ -255,8 +273,11 @@ class App extends Component {
 
     return (
       <div className={classes.root}>
-
-        <ConfirmationDialog handleClose={this.handleTZDialogClose} open={this.state.openTZDialog} value={"UTC"}/> 
+        <ConfirmationDialog
+          handleClose={this.handleTZDialogClose}
+          open={this.state.openTZDialog}
+          value={"Dublin"}
+        />
 
         <AppBar position="static" color="default">
           <Toolbar>
@@ -275,7 +296,11 @@ class App extends Component {
         >
           <Grid item xs={12}>
             <Card className={classes.paper}>
-              <SimpleSlider value={this.state.timelineValue} tz={this.state.selectedTZ} onTZButtonClick={this.handleTZButtonClick}/>
+              <SimpleSlider
+                value={this.state.timelineValue}
+                tz={this.state.selectedTZ}
+                onTZButtonClick={this.handleTZButtonClick}
+              />
             </Card>
           </Grid>
 
@@ -297,6 +322,7 @@ class App extends Component {
                       groupB={this.state.offices}
                       groups={this.state.filterTeamGroups}
                       selection={this.state.filterTeamSelection}
+                      groupsMapping={this.state.filterTeamGroups}
                       onBoxCheck={this.checkBox}
                     />
                   </Grid>
@@ -308,6 +334,7 @@ class App extends Component {
                       groupB={this.state.tags}
                       groups={this.state.filterSkills}
                       selection={this.state.filterSkillSelection}
+                      groupsMapping={this.state.filterSkills}
                       onBoxCheck={this.checkBox}
                     />
                   </Grid>
