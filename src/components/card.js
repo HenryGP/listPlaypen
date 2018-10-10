@@ -41,12 +41,12 @@ class SimpleCard extends Component {
   render() {
     const { classes } = this.props;
 
-    var listA = this.state.groupA.map(element => {
+    var listA = this.props.groupA.map(element => {
       return (
         <FormControlLabel
           control={
             <Checkbox
-              checked={this.state.selection.includes(element)}
+              checked={this.props.selection.includes(element)}
               onChange={this.checkedBox({ element })}
               color="primary"
               value={element}
@@ -58,12 +58,12 @@ class SimpleCard extends Component {
       );
     });
 
-    var listB = this.state.groupB.map(element => {
+    var listB = this.props.groupB.map(element => {
       return (
         <FormControlLabel
           control={
             <Checkbox
-              checked={this.state.selection.includes(element)}
+              checked={this.props.selection.includes(element)}
               onChange={this.checkedBox({ element })}
               color="primary"
               value={element}
@@ -75,6 +75,7 @@ class SimpleCard extends Component {
       );
     });
 
+    
     return (
       <Card className={classes.card}>
         <CardContent>

@@ -70,8 +70,20 @@ const filterTeamSelection = ["APAC"];
 
 const filterTeamGroups = {
   APAC: ["Sydney", "Delhi"],
-  EMEA: ["Dublin", "Tel Aviv"],
-  NA: ["New York", "Austin", "Palo Alto"]
+  EMEA: ["Dublin", "Tel Aviv", "Cont. Europe"],
+  NA: ["New York", "Austin", "Denver", "Palo Alto"]
+};
+
+const tzSwitch = {
+  'Sydney': 'Australia/Sydney', 
+  'Delhi': 'Asia/Kolkata',
+  'Tel Aviv': 'Asia/Jerusalem',
+  'Cont. Europe': 'Europe/Paris',
+  'Dublin': 'Europe/Dublin',
+  'New York': 'America/New_York',
+  'Austin': 'America/Chicago',
+  'Denver': 'America/Denver',
+  'Palo Alto': 'America/Los_Angeles',
 };
 
 const tableData = [
@@ -83,18 +95,6 @@ const tableData = [
   createData("Guy6", 300, 7, "APAC", "Core", 1, 1, true),
   createData("Guy7", 150, 5, "NA", "Atlas", 1, 1, true)
 ];
-
-const tzSwitch = {
-  'Sydney': 'Australia/Sydney',
-  'Delhi': 'Asia/Kolkata',
-  'Tel Aviv': 'Asia/Jerusalem',
-  'Cont. Europe': 'Europe/Paris',
-  'Dublin': 'Europe/Dublin',
-  'New York': 'America/New_York',
-  'Austin': 'America/Chicago',
-  'Denver': 'America/Denver',
-  'Palo Alto': 'America/Los_Angeles',
-};
 
 function removeElement(value, array) {
   var index = array.indexOf(value);
@@ -132,14 +132,15 @@ class App extends Component {
       });
     });
 
-    const currentUTC = moment.utc().toISOString()
+    const currentUTC = moment.utc();
+    var filtering = this.adjustFilters();
 
     this.state = {
       classes: classes,
       filterTeamGroups: filterTeamGroups,
       geoRegions: geoRegions,
-      offices: offices,
-      filterTeamSelection: filterTeamSelection,
+      offices: filtering["offices"],
+      filterTeamSelection: filtering["filterTeamSelection"],
       tableData: tableData,
       skills: skills,
       tags: tags,
@@ -164,8 +165,31 @@ class App extends Component {
   handleTZDialogClose(value){
     var timeValue = this.transformTZ(this.state.currentUTC, value);
     this.setState({openTZDialog: false, timelineValue: timeValue, selectedTZ: value});
-    console.log(this.state)
+    var filtering = this.adjustFilters();
+    this.setState({filterTeamSelection: filtering["filterTeamSelection"], offices: filtering["offices"]});
   }
+
+  adjustFilters(){
+    var location, currentLocationTime
+    var adjustedFilter=[], adjustedOffices=[];
+    var currentUTC = moment.utc();
+    for(location in tzSwitch){
+      currentLocationTime = currentUTC.tz(tzSwitch[location]); //current time in location
+      if(currentLocationTime.hours()>=9 && currentLocationTime.hours() < 18){
+        var region;
+        for(region in filterTeamGroups){
+          if(filterTeamGroups[region].includes(location) && !adjustedFilter.includes(region)){
+            adjustedFilter.push(region);
+          }
+        }
+        if(!adjustedOffices.includes(location)){
+          adjustedOffices.push(location);
+        }
+       }
+    }
+    return {"filterTeamSelection": adjustedFilter.concat(adjustedOffices), "offices": adjustedOffices};
+    //this.setState({filterTeamSelection: adjustedFilter.concat(adjustedOffices), offices: adjustedOffices});
+  };
 
   handleTZButtonClick(){
     this.setState({openTZDialog: true});
