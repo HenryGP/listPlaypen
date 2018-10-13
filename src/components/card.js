@@ -28,9 +28,6 @@ const styles = {
 };
 
 class SimpleCard extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   checkedBox = name => event => {
     this.props.onBoxCheck(name, event, this.props.groupA);
